@@ -1,14 +1,21 @@
 package com.pluralsight.conferencedemo.controllers;
 
-import com.pluralsight.conferencedemo.models.Session;
-import com.pluralsight.conferencedemo.models.Speaker;
-import com.pluralsight.conferencedemo.repositories.SessionRepository;
-import com.pluralsight.conferencedemo.repositories.SpeakerRepository;
+import java.util.List;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.pluralsight.conferencedemo.models.Speaker;
+import com.pluralsight.conferencedemo.repositories.SpeakerRepository;
 
 @RestController
 @RequestMapping("/api/v1/speakers")
@@ -22,6 +29,11 @@ public class SpeakersController {
         return repository.list();
     }
 
+    @GetMapping(params = "name")
+    public List<Speaker> findAllByName(@RequestParam(required = true) String name) {
+        return repository.findAllByName(name);
+    }
+    
     @GetMapping
     @RequestMapping("{id}")
     public Speaker get(@PathVariable Long id) {

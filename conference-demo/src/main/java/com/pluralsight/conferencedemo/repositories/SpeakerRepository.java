@@ -1,39 +1,47 @@
 package com.pluralsight.conferencedemo.repositories;
 
-import com.pluralsight.conferencedemo.models.Speaker;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
+import com.pluralsight.conferencedemo.models.Speaker;
 
 @Repository
 public class SpeakerRepository {
-    @PersistenceContext
-    private EntityManager entityManager;
+	@Autowired
+	private SpeakerJpaRepository speakerRepo;
 
-    public Speaker create(Speaker speaker) {
-        entityManager.persist(speaker);
-        entityManager.flush();
-        return speaker;
-    }
+	@Transactional
+	public Speaker create(Speaker speaker) {
+		speakerRepo.save(speaker);
+		speakerRepo.addlog();
+		return speaker;
+	}
 
-    public Speaker update(Speaker speaker) {
-        speaker = entityManager.merge(speaker);
-        entityManager.flush();
-        return speaker;
-    }
+	public Speaker update(Speaker speaker) {
+		speaker = speakerRepo.save(speaker);
+		speakerRepo.addlog();
+		return speaker;
+	}
 
-    public void delete(Long id) {
-        entityManager.remove(find(id));
-        entityManager.flush();
-    }
+	public void delete(Long id) {
+		speakerRepo.delete(find(id));
+	}
 
-    public Speaker find(Long id) {
-        return entityManager.find(Speaker.class, id);
-    }
+	public Speaker find(Long id) {
+		return speakerRepo.findById(id).get();
+	}
 
-    public List<Speaker> list() {
-        return entityManager.createQuery("select s from Speaker s").getResultList();
-    }
+	public List<Speaker> list() {
+		return StreamSupport.stream(speakerRepo.findAll().spliterator(), false).collect(Collectors.toList());
+	}
+	
+	public List<Speaker> findAllByName(String name){
+		return speakerRepo.findAllFristName(name);
+	}
 }

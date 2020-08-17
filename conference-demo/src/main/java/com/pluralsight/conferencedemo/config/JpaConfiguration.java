@@ -3,7 +3,9 @@ package com.pluralsight.conferencedemo.config;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.hibernate.dialect.PostgreSQL95Dialect;
+import javax.sql.DataSource;
+
+import org.hibernate.dialect.H2Dialect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -14,8 +16,6 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.sql.DataSource;
-
 @Configuration
 public class JpaConfiguration {
 
@@ -23,9 +23,9 @@ public class JpaConfiguration {
 	public DataSource getDataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
-		dataSource.setDriverClassName("org.postgresql.Driver");
-		dataSource.setUrl("jdbc:postgresql:conference_app");
-		dataSource.setUsername("root");
+		dataSource.setDriverClassName("org.h2.Driver");
+		dataSource.setUrl("jdbc:h2:tcp://localhost/~/test");
+		dataSource.setUsername("sa");
 		dataSource.setPassword("");
 
 		return dataSource;
@@ -34,7 +34,7 @@ public class JpaConfiguration {
 	@Bean
 	public Map<String, Object> jpaProperties() {
 		Map<String, Object> props = new HashMap<String, Object>();
-		props.put("hibernate.dialect", PostgreSQL95Dialect.class.getName());
+		props.put("hibernate.dialect", H2Dialect.class.getName());
 //		props.put("hibernate.cache.provider_class", HashtableCacheProvider.class.getName());
 		return props;
 	}
